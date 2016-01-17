@@ -1,0 +1,11 @@
+{
+    "name"        : "express",
+    "version"     : "0.0.0",
+
+    "dependencies": {
+        "express"        : "",
+        "mongoose"       : "",
+        "express-session": "",
+        "body-parser"    : ""
+    }
+}
