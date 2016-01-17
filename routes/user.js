@@ -24,9 +24,7 @@ module.exports = {
             doc.email = body.email;
             doc.age = body.age;
 
-            doc.save(function (err) {
-                jtool.onsave(err);
-            });
+            doc.save(jtool.onsave);
         });
     },
 
@@ -43,8 +41,6 @@ module.exports = {
             });
         }
 
-        model.findByIdAndUpdate(id, {isdel: 1}, function (err) {
-            jtool.onsave(err);
-        });
+        model.findByIdAndUpdate(id, {isdel: 1}, jtool.onsave);
     }
 };

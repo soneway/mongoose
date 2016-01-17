@@ -17,9 +17,7 @@ module.exports = {
         var id = body._id;
         //查一个
         if (id) {
-            return model.findById(id).exec(function (err, doc) {
-                jtool.onsave(err, doc);
-            });
+            return model.findById(id).exec(jtool.onsave);
         }
 
         //查列表
@@ -65,9 +63,7 @@ module.exports = {
         body.author = user.uid;
         body.createtime = new Date;
 
-        model.create(body, function (err, doc) {
-            jtool.onsave(err, doc);
-        });
+        model.create(body, jtool.onsave);
     },
 
     //修改文章
@@ -100,9 +96,7 @@ module.exports = {
             doc.content = body.content;
             doc.updatetime = new Date;
 
-            doc.save(function (err) {
-                jtool.onsave(err);
-            });
+            doc.save(jtool.onsave);
         });
     }
 };
