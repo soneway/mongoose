@@ -10,14 +10,14 @@ module.exports = router;
 router.get = function (req) {
     var query = req.query;
 
-    var _id = query._id;
     //查id
-    if (_id) {
-        return router.getById(_id);
-    }
+    if (query._id) return router.getById(query._id);
 
     //查列表
-    router.getList(query, '_id title');
+    router.getList({
+        query : query,
+        select: '_id title author'
+    });
 };
 
 
@@ -26,15 +26,14 @@ router.post = function (req) {
     var body = req.body,
         user = req.session.user;
 
-    //删掉_id
-    delete body._id;
-
     //添加其他信息
     body._userid = user._id;
     body.author = user.uid;
     body.createtime = new Date;
 
-    model.create(body, jtool.onsave);
+    router.add({
+        doc: body
+    });
 };
 
 
@@ -43,19 +42,10 @@ router.put = function (req) {
     var body = req.body,
         user = req.session.user;
 
-    var _id = body._id;
-    //id非空验证
-    if (!_id) {
-        return jtool.send({
-            status: 400,
-            msg   : 'id不能为空'
-        });
-    }
-
-    model.findById(_id).exec(function (err, doc) {
+    //判断是否是相同作者
+    model.findById(body._id).exec(function (err, doc) {
         if (err) return jtool.onerror(err);
 
-        //判断是否是相同作者
         if (doc._userid !== user._id) {
             return jtool.send({
                 status: 400,
@@ -63,11 +53,12 @@ router.put = function (req) {
             });
         }
 
-        //读取信息
-        doc.title = body.title;
-        doc.content = body.content;
-        doc.updatetime = new Date;
+        //添加其他信息
+        body.updatetime = new Date;
 
-        doc.save(jtool.onsave);
+        router.editById({
+            _id: body._id,
+            doc: body
+        });
     });
 };

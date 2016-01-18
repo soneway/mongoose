@@ -16,18 +16,18 @@ router.post = function (req) {
     }).exec(function (err, doc) {
         if (err) return jtool.onerror(err);
 
+        //用户名被占用
         if (doc) {
             return jtool.send({
                 status: 400,
-                msg   : '用户已存在'
+                msg   : '用户名被占用'
             });
         }
 
         //添加用户
-        model.create(body, function (err, doc) {
-            //session记录用户
-            req.session.user = doc;
-            jtool.onsave(err, doc);
+        router.add({
+            doc : body,
+            $out: 'isadmin'
         });
     });
 };
@@ -38,23 +38,21 @@ router.put = function (req) {
     var body = req.body,
         user = req.session.user;
 
-    model.findById(user._id).exec(function (err, doc) {
-        if (err) return jtool.onerror(err);
-
-        //验证原密码
-        if (body.old_pwd !== doc.pwd) {
-            return jtool.send({
-                status: 400,
-                msg   : '原密码不正确'
-            });
-        }
-
-        doc.pwd = body.pwd;
-        doc.email = body.email;
-        doc.age = body.age;
-
-        doc.save(jtool.onsave);
+    router.editById({
+        _id : user._id,
+        doc : body,
+        $out: 'pwd isadmin'
     });
+};
+
+
+//注销用户
+router.delete = function (req) {
+    var user = req.session.user;
+
+    req.session.user = null;
+    //删除
+    router.removeById(user._id);
 };
 
 

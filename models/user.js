@@ -6,21 +6,27 @@ var mongoose = require('mongoose'),
 //集合名
 var name = 'user';
 var schma = new Schema({
-    uid  : {
+    uid    : {
         type    : String,
         required: true
     },
-    pwd  : {
+    pwd    : {
         type    : String,
         required: true
     },
-    age  : {
+    age    : {
         type: Number
     },
-    email: {
+    email  : {
         type: String
     },
-    isdel: {
+    isdel  : {
+        type   : Number,
+        enum   : [0, 1],
+        default: 0
+    },
+    //是否是管理员
+    isadmin: {
         type   : Number,
         enum   : [0, 1],
         default: 0
