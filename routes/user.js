@@ -3,6 +3,8 @@
 var model = require('../models/user');
 var Router = require('./_router.js');
 var router = new Router(model);
+module.exports = router;
+
 
 //添加用户
 router.post = function (req) {
@@ -29,6 +31,7 @@ router.post = function (req) {
         });
     });
 };
+
 
 //编辑用户
 router.put = function (req) {
@@ -104,5 +107,3 @@ router.loginfo = function (req) {
         data  : req.session.user
     });
 };
-
-module.exports = router;

@@ -1,4 +1,4 @@
-//用户注册
+//注册
 
 var router = require('./user');
 

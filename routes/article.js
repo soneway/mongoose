@@ -3,6 +3,8 @@
 var model = require('../models/article');
 var Router = require('./_router.js');
 var router = new Router(model);
+module.exports = router;
+
 
 //获取文章
 router.get = function (req) {
@@ -34,6 +36,7 @@ router.post = function (req) {
 
     model.create(body, jtool.onsave);
 };
+
 
 //修改文章
 router.put = function (req) {

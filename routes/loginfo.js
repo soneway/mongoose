@@ -1,4 +1,4 @@
-//用户登陆
+//登陆信息
 
 var user = require('./user');
 
