@@ -7,7 +7,7 @@ function Router(model) {
 //查id
 Router.prototype.getById = function (_id, select) {
     var model = this.model;
-    model.findById(_id).exec(jtool.onsave).select(select);
+    model.findById(_id).select(select).exec(jtool.onsave);
 };
 
 

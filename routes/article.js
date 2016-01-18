@@ -11,7 +11,7 @@ router.get = function (req) {
     var query = req.query;
 
     var _id = query._id;
-    //查单个
+    //查id
     if (_id) {
         return router.getById(_id);
     }
