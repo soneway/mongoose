@@ -25,8 +25,8 @@ Router.prototype.getList = (function () {
 
         //查询参数
         var search = jtool.extend({}, dsearch, query),
-            page = search.page,
-            pagesize = search.pagesize;
+            page = +search.page,
+            pagesize = +search.pagesize;
 
         //计算总数
         model.count().ne('isdel', 1).exec(function (err, count) {
@@ -49,7 +49,7 @@ Router.prototype.getList = (function () {
                     status  : 200,
                     page    : page,
                     maxpage : Math.ceil(count / pagesize),
-                    sum     : count,
+                    count   : count,
                     pagesize: pagesize,
                     data    : doc
                 });
