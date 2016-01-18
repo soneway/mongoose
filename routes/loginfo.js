@@ -3,5 +3,5 @@
 var user = require('./user');
 
 module.exports = {
-    post: user.login
+    get: user.loginfo
 };

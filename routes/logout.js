@@ -1,10 +1,7 @@
 //退出登陆
 
+var user = require('./user');
+
 module.exports = {
-    get: function (req) {
-        req.session.user = null;
-        jtool.send({
-            status: 200
-        });
-    }
+    get: user.logout
 };
