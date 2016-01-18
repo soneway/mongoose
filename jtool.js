@@ -39,10 +39,9 @@ module.exports = function (req, res) {
 
     //错误处理函数
     function onerror(err) {
-        console.log(err);
         send({
             status: 500,
-            msg   : '服务器错误'
+            msg   : err.message
         });
     }
 
@@ -54,8 +53,8 @@ module.exports = function (req, res) {
             status: 200
         };
 
-        //如果有doc
-        doc && (resInfo.data = doc);
+        //如果有doc返回id
+        doc && (resInfo.data = {_id: doc._id});
         send(resInfo);
     }
 

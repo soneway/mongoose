@@ -3,16 +3,16 @@ function Router(model) {
     this.model = model;
 }
 
-//id非空错误处理函数
+//_id非空错误处理函数
 function idError() {
     jtool.send({
         status: 400,
-        msg   : 'id不能为空'
+        msg   : '_id不能为空'
     });
 }
 
 //默认排除项
-var $dout = ['_id isdel'];
+var $dout = '_id isdel';
 //field过滤函数
 function filterField(body, $out, $in) {
     //默认项排除

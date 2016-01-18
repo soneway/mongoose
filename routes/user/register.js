@@ -1,6 +1,6 @@
 //注册
 
-var router = require('./user');
+var router = require('./index');
 
 module.exports = {
     post: router.post

@@ -20,9 +20,9 @@ app.use(session({
 
 
 //需要登陆拦截的path
-var loginPaths = ['/loginfo', '/user'],
+var loginPaths = ['/user/getinfo', '/user'],
 //不要登陆拦截的path
-    nologinPaths = ['/login', '/register'];
+    nologinPaths = ['/user/login', '/user/register'];
 //登陆拦截
 app.use('/*', function (req, res, next) {
     var path = req.baseUrl;

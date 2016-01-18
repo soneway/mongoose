@@ -1,12 +1,12 @@
 //用户
 
-var model = require('../models/user');
-var Router = require('./_router.js');
+var model = require('../../models/user');
+var Router = require('../_router.js');
 var router = new Router(model);
 module.exports = router;
 
 
-//添加用户
+//注册
 router.post = function (req) {
     var body = req.body;
 
@@ -16,11 +16,11 @@ router.post = function (req) {
     }).exec(function (err, doc) {
         if (err) return jtool.onerror(err);
 
-        //用户名被占用
+        //用户名已存在
         if (doc) {
             return jtool.send({
                 status: 400,
-                msg   : '用户名被占用'
+                msg   : '用户名已存在'
             });
         }
 
@@ -33,7 +33,7 @@ router.post = function (req) {
 };
 
 
-//编辑用户
+//编辑资料
 router.put = function (req) {
     var body = req.body,
         user = req.session.user;
@@ -41,18 +41,8 @@ router.put = function (req) {
     router.editById({
         _id : user._id,
         doc : body,
-        $out: 'pwd isadmin'
+        $out: 'uid pwd isadmin'
     });
-};
-
-
-//注销用户
-router.delete = function (req) {
-    var user = req.session.user;
-
-    req.session.user = null;
-    //删除
-    router.removeById(user._id);
 };
 
 
@@ -68,7 +58,7 @@ router.login = function (req) {
         //用户名不存在
         if (!doc) {
             return jtool.send({
-                status: 401,
+                status: 400,
                 msg   : '用户名不存在'
             });
         }
@@ -76,16 +66,18 @@ router.login = function (req) {
         //密码错误
         if (doc.pwd !== body.pwd) {
             return jtool.send({
-                status: 401,
+                status: 400,
                 msg   : '密码错误'
             });
         }
 
         //session记录用户
-        req.session.user = doc;
         jtool.send({
             status: 200,
-            data  : doc
+            data  : req.session.user = {
+                _id: doc._id,
+                uid: doc.uid
+            }
         });
     });
 };
@@ -99,9 +91,38 @@ router.logout = function (req) {
 };
 
 //获取用户信息
-router.loginfo = function (req) {
+router.getinfo = function (req) {
     jtool.send({
         status: 200,
         data  : req.session.user
+    });
+};
+
+//修改密码
+router.modipwd = function (req) {
+    var body = req.body,
+        user = req.session.user;
+
+    if (!body.pwd) {
+        return jtool.send({
+            status: 400,
+            msg   : 'pwd不能为空'
+        });
+    }
+
+    model.findById(user._id).exec(function (err, doc) {
+        if (err) return jtool.onerror(err);
+
+        //旧密码不正确
+        if (body.oldpwd !== doc.pwd) {
+            return jtool.send({
+                status: 400,
+                msg   : '旧密码不正确'
+            });
+        }
+
+        //保存
+        doc.pwd = body.pwd;
+        doc.save(jtool.onsave);
     });
 };
