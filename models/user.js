@@ -20,15 +20,9 @@ var schma = new Schema({
     email  : {
         type: String
     },
-    isdel  : {
+    //记录状态,0为默认,-1为删除,-2为已注销,1为管理员
+    status  : {
         type   : Number,
-        enum   : [0, 1],
-        default: 0
-    },
-    //是否是管理员
-    isadmin: {
-        type   : Number,
-        enum   : [0, 1],
         default: 0
     }
 });

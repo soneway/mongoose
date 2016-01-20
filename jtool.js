@@ -47,6 +47,13 @@ module.exports = function (req, res) {
 
     //保存处理函数
     function onsave(err, doc) {
+        onget(err, {
+            _id: doc._id
+        });
+    }
+
+    //查询处理函数
+    function onget(err, doc) {
         if (err) return onerror(err);
 
         var resInfo = {
@@ -54,7 +61,7 @@ module.exports = function (req, res) {
         };
 
         //如果有doc返回id
-        doc && (resInfo.data = {_id: doc._id});
+        doc && (resInfo.data = doc);
         send(resInfo);
     }
 
@@ -62,6 +69,7 @@ module.exports = function (req, res) {
         extend : extend,
         send   : send,
         onerror: onerror,
-        onsave : onsave
+        onsave : onsave,
+        onget  : onget
     };
 };

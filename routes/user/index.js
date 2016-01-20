@@ -41,8 +41,17 @@ router.put = function (req) {
     router.editById({
         _id : user._id,
         doc : body,
-        $out: 'uid pwd isadmin'
+        $out: 'uid pwd'
     });
+};
+
+
+//注销
+router.delete = function (req) {
+    var user = req.session.user;
+
+    req.session.user = null;
+    model.findByIdAndUpdate(user._id, {status: -2}, jtool.onsave);
 };
 
 
@@ -52,7 +61,7 @@ router.login = function (req) {
 
     model.findOne({
         uid: body.uid
-    }).ne('isdel', 1).exec(function (err, doc) {
+    }).ne('status', -1).exec(function (err, doc) {
         if (err) return jtool.onerror(err);
 
         //用户名不存在
@@ -75,8 +84,9 @@ router.login = function (req) {
         jtool.send({
             status: 200,
             data  : req.session.user = {
-                _id: doc._id,
-                uid: doc.uid
+                _id   : doc._id,
+                uid   : doc.uid,
+                status: doc.status
             }
         });
     });

@@ -11,35 +11,40 @@ function idError() {
     });
 }
 
-//默认排除项
-var $dout = '_id isdel';
 //field过滤函数
-function filterField(body, $out, $in) {
-    //默认项排除
-    $dout.split(' ').forEach(function (item) {
-        delete body[item];
-    });
+var filterField = (function () {
 
-    //排除
-    if (typeof $out === 'string') {
-        $out.split(' ').forEach(function (item) {
+    //默认排除项
+    var $dout = '_id status';
+
+    return function (body, $out, $in) {
+        //默认项排除
+        $dout.split(' ').forEach(function (item) {
             delete body[item];
         });
+
+        //排除
+        if (typeof $out === 'string') {
+            $out.split(' ').forEach(function (item) {
+                delete body[item];
+            });
+            return body;
+        }
+
+        //包含
+        if (typeof $in === 'string') {
+            var doc = {};
+            $in.split(' ').forEach(function (item) {
+                doc[item] = body[item];
+            });
+            return doc;
+        }
+
+        //其他
         return body;
-    }
+    };
 
-    //包含
-    if (typeof $in === 'string') {
-        var doc = {};
-        $in.split(' ').forEach(function (item) {
-            doc[item] = body[item];
-        });
-        return doc;
-    }
-
-    //其他
-    return body;
-}
+})();
 
 
 //查id
@@ -49,52 +54,57 @@ Router.prototype.getById = function (_id, select) {
     //id非空验证
     if (!_id) return idError();
 
-    model.findById(_id).select(select).exec(jtool.onsave);
+    model.findById(_id).select(select).exec(jtool.onget);
 };
 
-//默认查询参数
-var dquery = {
-    page    : 1,
-    pagesize: 10
-};
 //查列表
-Router.prototype.getList = function (opts) {
-    var model = this.model;
-    opts || (opts = {});
+Router.prototype.getList = (function () {
 
-    //查询参数
-    var query = jtool.extend({}, dquery, opts.query),
-        page = +query.page,
-        pagesize = +query.pagesize;
+    //默认查询参数
+    var dquery = {
+        page    : 1,
+        pagesize: 10
+    };
 
-    //计算总数
-    model.count().ne('isdel', 1).exec(function (err, count) {
-        if (err) return jtool.onerror(err);
+    return function (opts) {
+        var model = this.model;
+        opts || (opts = {});
 
-        var query = model.find(opts.condition)
-            .ne('isdel', 1)
-            .limit(pagesize)
-            .skip((page - 1) * pagesize);
+        //查询参数
+        var query = jtool.extend({}, dquery, opts.query),
+            page = +query.page,
+            pagesize = +query.pagesize;
 
-        //select
-        opts.select && query.select(opts.select);
-        //sort
-        opts.sort && select.sort(opts.sort);
-
-        query.exec(function (err, doc) {
+        //计算总数
+        model.count().ne('status', -1).exec(function (err, count) {
             if (err) return jtool.onerror(err);
 
-            jtool.send({
-                status  : 200,
-                page    : page,
-                maxpage : Math.ceil(count / pagesize),
-                count   : count,
-                pagesize: pagesize,
-                data    : doc
+            var query = model.find(opts.condition)
+                .ne('status', -1)
+                .limit(pagesize)
+                .skip((page - 1) * pagesize);
+
+            //select
+            opts.select && query.select(opts.select);
+            //sort
+            opts.sort && select.sort(opts.sort);
+
+            query.exec(function (err, doc) {
+                if (err) return jtool.onerror(err);
+
+                jtool.send({
+                    status  : 200,
+                    page    : page,
+                    maxpage : Math.ceil(count / pagesize),
+                    count   : count,
+                    pagesize: pagesize,
+                    data    : doc
+                });
             });
         });
-    });
-};
+    };
+
+})();
 
 
 //添加
@@ -137,7 +147,7 @@ Router.prototype.removeById = function (_id) {
     if (!_id) return idError();
 
     //更新
-    model.findByIdAndUpdate(_id, {isdel: 1}, jtool.onsave);
+    model.findByIdAndUpdate(_id, {status: -1}, jtool.onsave);
 };
 
 //列表删除
@@ -145,7 +155,7 @@ Router.prototype.removeList = function (condition) {
     var model = this.model;
 
     //更新
-    model.findAndUpdate(condition, {isdel: 1}, jtool.onsave);
+    model.findAndModify(condition, {status: -1}, jtool.onsave);
 };
 
 

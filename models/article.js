@@ -30,9 +30,9 @@ var schma = new Schema({
     uid       : {
         type: Schema.Types.ObjectId
     },
-    isdel     : {
+    //记录状态,0为默认,-1为删除
+    status    : {
         type   : Number,
-        enum   : [0, 1],
         default: 0
     }
 });
