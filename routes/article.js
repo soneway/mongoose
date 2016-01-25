@@ -72,3 +72,36 @@ router.put = function (req) {
         });
     });
 };
+
+
+//删除文章
+router.delete = function (req) {
+    var body = req.body,
+        user = req.session.user;
+
+    //_id非空验证
+    if (!body._id) {
+        return jtool.send({
+            status: 400,
+            msg   : '_id不能为空'
+        });
+    }
+
+    //查id
+    model.findById(body._id).exec(function (err, doc) {
+        if (err) return jtool.onerror(err);
+
+        //判断作者是否相同(doc._userid需先转成字符串)
+        if (doc._userid + '' !== user._id) {
+            return jtool.send({
+                status: 400,
+                msg   : '无权限修改'
+            });
+        }
+
+        //添加其他信息
+        body.updatetime = new Date;
+
+        router.delById(body._id);
+    });
+};

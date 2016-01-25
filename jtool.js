@@ -60,8 +60,7 @@ module.exports = function (req, res) {
             status: 200
         };
 
-        //如果有doc返回id
-        doc && (resInfo.data = doc);
+        resInfo.data = doc;
         send(resInfo);
     }
 

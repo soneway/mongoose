@@ -46,15 +46,6 @@ router.put = function (req) {
 };
 
 
-//注销
-router.delete = function (req) {
-    var user = req.session.user;
-
-    req.session.user = null;
-    model.findByIdAndUpdate(user._id, {status: -2}, jtool.onsave);
-};
-
-
 //登陆
 router.login = function (req) {
     var body = req.body;
@@ -135,4 +126,13 @@ router.modipwd = function (req) {
         doc.pwd = body.pwd;
         doc.save(jtool.onsave);
     });
+};
+
+
+//注销
+router.logoff = function (req) {
+    var user = req.session.user;
+
+    req.session.user = null;
+    model.findByIdAndUpdate(user._id, {status: -2}, jtool.onsave);
 };

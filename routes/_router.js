@@ -140,7 +140,7 @@ Router.prototype.editList = function (opts) {
 
 
 //id删除
-Router.prototype.removeById = function (_id) {
+Router.prototype.delById = function (_id) {
     var model = this.model;
 
     //id非空验证
@@ -151,7 +151,7 @@ Router.prototype.removeById = function (_id) {
 };
 
 //列表删除
-Router.prototype.removeList = function (condition) {
+Router.prototype.delList = function (condition) {
     var model = this.model;
 
     //更新
