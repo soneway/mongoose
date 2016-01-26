@@ -26,8 +26,7 @@ router.post = function (req) {
 
         //添加用户
         router.add({
-            doc : body,
-            $out: 'isadmin'
+            doc : body
         });
     });
 };
