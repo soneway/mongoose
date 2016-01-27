@@ -25,10 +25,11 @@ var loginPaths = ['/user/getinfo', '/user'],
     nologinPaths = ['/user/login', '/user/register'];
 //登陆拦截
 app.use('/*', function (req, res, next) {
-    var path = req.baseUrl;
-
     //初始化jtool
     global.jtool = require('./jtool.js')(req, res);
+
+    //请求路径
+    var path = req.baseUrl;
 
     //不需要登陆拦截的
     if (nologinPaths.indexOf(path) !== -1) {
