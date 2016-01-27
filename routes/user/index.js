@@ -18,15 +18,12 @@ router.post = function (req) {
 
         //用户名已存在
         if (doc) {
-            return jtool.send({
-                status: 400,
-                msg   : '用户名已存在'
-            });
+            return jtool.sendError('用户名已存在');
         }
 
         //添加用户
         router.add({
-            doc : body
+            doc: body
         });
     });
 };
@@ -56,28 +53,19 @@ router.login = function (req) {
 
         //用户名不存在
         if (!doc) {
-            return jtool.send({
-                status: 400,
-                msg   : '用户名不存在'
-            });
+            return jtool.sendError('用户名不存在');
         }
 
         //密码错误
         if (doc.pwd !== body.pwd) {
-            return jtool.send({
-                status: 400,
-                msg   : '密码错误'
-            });
+            return jtool.sendError('密码错误');
         }
 
         //session记录用户
-        jtool.send({
-            status: 200,
-            data  : req.session.user = {
-                _id   : doc._id,
-                uid   : doc.uid,
-                status: doc.status
-            }
+        jtool.sendData(req.session.user = {
+            _id   : doc._id,
+            uid   : doc.uid,
+            status: doc.status
         });
     });
 };
@@ -85,17 +73,12 @@ router.login = function (req) {
 //退出登陆
 router.logout = function (req) {
     req.session.user = null;
-    jtool.send({
-        status: 200
-    });
+    jtool.sendData();
 };
 
 //获取用户信息
 router.getinfo = function (req) {
-    jtool.send({
-        status: 200,
-        data  : req.session.user
-    });
+    jtool.sendData(req.session.user);
 };
 
 //修改密码
@@ -104,10 +87,7 @@ router.modipwd = function (req) {
         user = req.session.user;
 
     if (!body.pwd) {
-        return jtool.send({
-            status: 400,
-            msg   : 'pwd不能为空'
-        });
+        return jtool.sendError('pwd不能为空');
     }
 
     model.findById(user._id).exec(function (err, doc) {
@@ -115,10 +95,7 @@ router.modipwd = function (req) {
 
         //旧密码不正确
         if (body.oldpwd !== doc.pwd) {
-            return jtool.send({
-                status: 400,
-                msg   : '旧密码不正确'
-            });
+            return jtool.sendError('旧密码不正确');
         }
 
         //保存

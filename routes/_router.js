@@ -5,10 +5,7 @@ function Router(model) {
 
 //_id非空错误处理函数
 function idError() {
-    jtool.send({
-        status: 400,
-        msg   : '_id不能为空'
-    });
+    jtool.sendError('_id不能为空');
 }
 
 //field过滤函数
@@ -92,13 +89,12 @@ Router.prototype.getList = (function () {
             query.exec(function (err, doc) {
                 if (err) return jtool.onerror(err);
 
-                jtool.send({
-                    status  : 200,
+                jtool.sendData({
                     page    : page,
                     maxpage : Math.ceil(count / pagesize),
                     count   : count,
                     pagesize: pagesize,
-                    data    : doc
+                    list    : doc
                 });
             });
         });

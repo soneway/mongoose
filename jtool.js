@@ -25,16 +25,41 @@ module.exports = function (req, res) {
     }
 
     //向客户端发送信息函数
-    function send(resInfo) {
+    function send(rsInfo) {
         var query = req.query;
 
         //jsonp方式
         if (query && query.callback !== undefined) {
-            res.send(query.callback(resInfo));
+            res.send(query.callback(rsInfo));
         }
         else {
-            res.send(resInfo);
+            res.send(rsInfo);
         }
+    }
+
+    //向客户端发送信息函数
+    function sendMsg(status, msg) {
+        send({
+            status: status,
+            msg   : msg
+        });
+    }
+
+    //向客户端发送客户端请求错误信息函数
+    function sendError(msg) {
+        send({
+            status: 400,
+            msg   : msg
+        });
+    }
+
+    //向客户端发送数据函数
+    function sendData(data) {
+        var rsInfo = {
+            status: 200
+        };
+        data && (rsInfo.data = data);
+        send(rsInfo);
     }
 
     //错误处理函数
@@ -55,20 +80,17 @@ module.exports = function (req, res) {
     //查询处理函数
     function onget(err, doc) {
         if (err) return onerror(err);
-
-        var resInfo = {
-            status: 200
-        };
-
-        resInfo.data = doc;
-        send(resInfo);
+        sendData(doc);
     }
 
     return {
-        extend : extend,
-        send   : send,
-        onerror: onerror,
-        onsave : onsave,
-        onget  : onget
+        extend   : extend,
+        send     : send,
+        sendMsg  : sendMsg,
+        sendError: sendError,
+        sendData : sendData,
+        onerror  : onerror,
+        onsave   : onsave,
+        onget    : onget
     };
 };

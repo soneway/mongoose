@@ -35,24 +35,10 @@ app.use('/*', function (req, res, next) {
         return next();
     }
 
-    //需要登陆拦截的
-    if (loginPaths.indexOf(path) !== -1) {
+    //需要登陆拦截的,其他默认为不是get都拦截下
+    if (loginPaths.indexOf(path) !== -1 || req.method !== 'GET') {
         if (!req.session.user) {
-            return jtool.send({
-                status: 401,
-                msg   : '未登陆'
-            });
-        }
-        return next();
-    }
-
-    //其他默认为不是get都拦截下
-    if (req.method !== 'GET') {
-        if (!req.session.user) {
-            return jtool.send({
-                status: 401,
-                msg   : '未登陆'
-            });
+            return jtool.sendMsg(401, '未登陆');
         }
     }
     next();
@@ -67,20 +53,14 @@ app.use('/*', function (req, res) {
         router = require('./routes' + req.baseUrl);
     }
     catch (err) {
-        return jtool.send({
-            status: 404,
-            msg   : err.message
-        });
+        return jtool.sendMsg(404, err.message);
     }
 
     //请求响应函数
     var cb = router[req.method.toLowerCase()];
     //未知的method
     if (typeof cb !== 'function') {
-        return jtool.send({
-            status: 404,
-            msg   : '未知方法'
-        });
+        return jtool.sendMsg(404, '未知方法');
     }
     cb(req, res);
 });
