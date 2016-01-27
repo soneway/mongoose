@@ -64,8 +64,7 @@ router.login = function (req) {
         //session记录用户
         jtool.sendData(req.session.user = {
             _id   : doc._id,
-            uid   : doc.uid,
-            status: doc.status
+            uid   : doc.uid
         });
     });
 };
