@@ -49,7 +49,7 @@ router.put = function (req) {
 
     //查id
     model.findById(body._id).exec(function (err, doc) {
-        if (err) return jtool.onerror(err);
+        if (err) return jtool.error(err);
 
         //判断作者是否相同(doc._userid需先转成字符串)
         if (!doc || doc._userid + '' !== user._id) {
@@ -80,7 +80,7 @@ router.delete = function (req) {
 
     //查id
     model.findById(body._id).exec(function (err, doc) {
-        if (err) return jtool.onerror(err);
+        if (err) return jtool.error(err);
 
         //判断作者是否相同(doc._userid需先转成字符串)
         if (!doc || doc._userid + '' !== user._id) {

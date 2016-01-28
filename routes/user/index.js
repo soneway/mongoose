@@ -14,7 +14,7 @@ router.post = function (req) {
     model.findOne({
         uid: body.uid
     }).exec(function (err, doc) {
-        if (err) return jtool.onerror(err);
+        if (err) return jtool.error(err);
 
         //用户名已存在
         if (doc) {
@@ -49,7 +49,7 @@ router.login = function (req) {
     model.findOne({
         uid: body.uid
     }).ne('status', -1).exec(function (err, doc) {
-        if (err) return jtool.onerror(err);
+        if (err) return jtool.error(err);
 
         //用户名不存在
         if (!doc) {
@@ -90,7 +90,7 @@ router.modipwd = function (req) {
     }
 
     model.findById(user._id).exec(function (err, doc) {
-        if (err) return jtool.onerror(err);
+        if (err) return jtool.error(err);
 
         //旧密码不正确
         if (body.oldpwd !== doc.pwd) {

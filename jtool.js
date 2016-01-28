@@ -63,7 +63,7 @@ module.exports = function (req, res) {
     }
 
     //错误处理函数
-    function onerror(err) {
+    function error(err) {
         send({
             status: 500,
             msg   : err.message
@@ -79,7 +79,7 @@ module.exports = function (req, res) {
 
     //查询处理函数
     function onget(err, doc) {
-        if (err) return onerror(err);
+        if (err) return error(err);
         sendData(doc);
     }
 
@@ -89,7 +89,7 @@ module.exports = function (req, res) {
         sendMsg  : sendMsg,
         sendError: sendError,
         sendData : sendData,
-        onerror  : onerror,
+        error    : error,
         onsave   : onsave,
         onget    : onget
     };

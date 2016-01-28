@@ -74,7 +74,7 @@ Router.prototype.getList = (function () {
 
         //计算总数
         model.count().ne('status', -1).exec(function (err, count) {
-            if (err) return jtool.onerror(err);
+            if (err) return jtool.error(err);
 
             var query = model.find(opts.condition)
                 .ne('status', -1)
@@ -87,7 +87,7 @@ Router.prototype.getList = (function () {
             opts.sort && select.sort(opts.sort);
 
             query.exec(function (err, doc) {
-                if (err) return jtool.onerror(err);
+                if (err) return jtool.error(err);
 
                 jtool.sendData({
                     page    : page,

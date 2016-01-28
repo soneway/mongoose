@@ -6,6 +6,7 @@
         "express"        : "",
         "mongoose"       : "",
         "express-session": "",
-        "body-parser"    : ""
+        "body-parser"    : "",
+        "multer"         : ""
     }
 }
