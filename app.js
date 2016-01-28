@@ -1,4 +1,5 @@
 var express = require('express');
+var path = require('path');
 var app = express();
 
 
@@ -22,7 +23,7 @@ app.use(session({
 //需要登陆拦截的path
 var loginPaths = ['/user/getinfo', '/user'],
 //不要登陆拦截的path
-    nologinPaths = ['/user/login', '/user/register'];
+    nologinPaths = ['/user/login', '/user/register', '/upload'];
 //登陆拦截
 app.use('/*', function (req, res, next) {
     //初始化jtool
@@ -48,10 +49,13 @@ app.use('/*', function (req, res, next) {
 
 //路径响应
 app.use('/*', function (req, res) {
+    //请求路径
+    var path = req.baseUrl;
+
     //预防未知路径
     var router;
     try {
-        router = require('./routes' + req.baseUrl);
+        router = require('./routes' + path);
     }
     catch (err) {
         return jtool.sendMsg(404, err.message);
