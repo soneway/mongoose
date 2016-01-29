@@ -19,6 +19,10 @@ app.use(session({
     }
 }));
 
+//静态资源
+app.set('static', '_static');
+app.use('/' + app.get('static'), express.static(app.get('static')));
+
 
 //需要登陆拦截的path
 var loginPaths = ['/user/getinfo', '/user'],
@@ -26,11 +30,12 @@ var loginPaths = ['/user/getinfo', '/user'],
     nologinPaths = ['/user/login', '/user/register', '/upload'];
 //登陆拦截
 app.use('/*', function (req, res, next) {
+    //请求路径
+    var path = req.baseUrl;console.log(path);
+
     //初始化jtool
     global.jtool = require('./jtool.js')(req, res);
 
-    //请求路径
-    var path = req.baseUrl;
 
     //不需要登陆拦截的
     if (nologinPaths.indexOf(path) !== -1) {
