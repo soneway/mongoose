@@ -31,7 +31,7 @@ var loginPaths = ['/user/getinfo', '/user'],
 //登陆拦截
 app.use('/*', function (req, res, next) {
     //请求路径
-    var path = req.baseUrl;console.log(path);
+    var path = req.baseUrl;
 
     //初始化jtool
     global.jtool = require('./jtool.js')(req, res);
