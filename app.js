@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
 var app = express();
+var Jtool = require('./jtool.js');
 
 
 //解析ajax请求的application/x-www-form-urlencoded数据,不然req.body无法获取
@@ -27,15 +28,13 @@ app.use('/' + app.get('static'), express.static(app.get('static')));
 //需要登陆拦截的path
 var loginPaths = ['/user/getinfo', '/user'],
 //不要登陆拦截的path
-    nologinPaths = ['/user/login', '/user/register', '/upload'];
+    nologinPaths = ['/user/login', '/user/register'];
 //登陆拦截
 app.use('/*', function (req, res, next) {
     //请求路径
     var path = req.baseUrl;
 
-    //初始化jtool
-    global.jtool = require('./jtool.js')(req, res);
-
+    global.jtool = new Jtool(req, res);
 
     //不需要登陆拦截的
     if (nologinPaths.indexOf(path) !== -1) {
@@ -58,13 +57,13 @@ app.use('/*', function (req, res) {
     var path = req.baseUrl;
 
     //预防未知路径
-    var router;
-    try {
-        router = require('./routes' + path);
-    }
-    catch (err) {
-        return jtool.sendMsg(404, err.message);
-    }
+    var router = require('./routes' + path);
+    //try {
+    //    router = require('./routes' + path);
+    //}
+    //catch (err) {
+    //    return jtool.sendMsg(404, err.message);
+    //}
 
     //请求响应函数
     var cb = router[req.method.toLowerCase()];

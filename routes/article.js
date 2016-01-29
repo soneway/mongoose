@@ -15,7 +15,10 @@ router.get = function (req) {
 
     //查列表
     router.getList({
-        query : query,
+        pager : {
+            page    : query.page,
+            pagesize: query.pagesize
+        },
         select: '_id title author'
     });
 };

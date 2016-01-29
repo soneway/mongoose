@@ -57,8 +57,8 @@ Router.prototype.getById = function (_id, select) {
 //查列表
 Router.prototype.getList = (function () {
 
-    //默认查询参数
-    var dquery = {
+    //默认分页参数
+    var dpager = {
         page    : 1,
         pagesize: 10
     };
@@ -68,9 +68,9 @@ Router.prototype.getList = (function () {
         opts || (opts = {});
 
         //查询参数
-        var query = jtool.extend({}, dquery, opts.query),
-            page = +query.page,
-            pagesize = +query.pagesize;
+        var pager = jtool.extend({}, dpager, opts.pager),
+            page = +pager.page,
+            pagesize = +pager.pagesize;
 
         //计算总数
         model.count().ne('status', -1).exec(function (err, count) {
@@ -84,7 +84,7 @@ Router.prototype.getList = (function () {
             //select
             opts.select && query.select(opts.select);
             //sort
-            opts.sort && select.sort(opts.sort);
+            opts.sort && query.sort(opts.sort);
 
             query.exec(function (err, doc) {
                 if (err) return jtool.error(err);
