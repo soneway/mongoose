@@ -1,7 +1,9 @@
 //退出登陆
 
-var user = require('./index');
+module.exports = function (req, res) {
+    var user = require('./index.js')(req, res);
 
-module.exports = {
-    get: user.logout
+    return {
+        GET: user.logout
+    };
 };

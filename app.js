@@ -1,7 +1,6 @@
 var express = require('express');
 var path = require('path');
 var app = express();
-var Jtool = require('./jtool.js');
 
 
 //解析ajax请求的application/x-www-form-urlencoded数据,不然req.body无法获取
@@ -33,8 +32,7 @@ var loginPaths = ['/user/getinfo', '/user'],
 app.use('/*', function (req, res, next) {
     //请求路径
     var path = req.baseUrl;
-
-    global.jtool = new Jtool(req, res);
+    var jtool = require('./jtool.js')(req, res);
 
     //不需要登陆拦截的
     if (nologinPaths.indexOf(path) !== -1) {
@@ -55,23 +53,18 @@ app.use('/*', function (req, res, next) {
 app.use('/*', function (req, res) {
     //请求路径
     var path = req.baseUrl;
+    var jtool = require('./jtool.js')(req, res);
 
     //预防未知路径
-    var router = require('./routes' + path);
-    //try {
-    //    router = require('./routes' + path);
-    //}
-    //catch (err) {
-    //    return jtool.sendMsg(404, err.message);
-    //}
+    var router = require('./routes' + path)(req, res);
 
     //请求响应函数
-    var cb = router[req.method.toLowerCase()];
+    var cb = router[req.method];
     //未知的method
     if (typeof cb !== 'function') {
         return jtool.sendMsg(404, '未知方法');
     }
-    cb(req, res);
+    cb();
 });
 
 

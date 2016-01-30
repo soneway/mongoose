@@ -20,14 +20,16 @@ var storage = multer.diskStorage({
         {name: 'image', maxCount: 1}
     ]);
 
-var router = {};
-module.exports = router;
+module.exports = function (req, res) {
+    var jtool = require('../jtool.js')(req, res);
 
-
-//上传文件
-router.post = function (req, res) {
-    upload(req, res, function (err) {
-        if (err) return jtool.error(err);
-        jtool.sendData(req.files);
-    });
+    return {
+        //上传文件
+        POST: function () {
+            upload(req, res, function (err) {
+                if (err) return jtool.error(err);
+                jtool.sendData(req.files);
+            });
+        }
+    };
 };

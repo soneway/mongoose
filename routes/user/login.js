@@ -1,7 +1,9 @@
 //登陆
 
-var user = require('./index');
+module.exports = function (req, res) {
+    var user = require('./index.js')(req, res);
 
-module.exports = {
-    post: user.login
+    return {
+        POST: user.login
+    };
 };

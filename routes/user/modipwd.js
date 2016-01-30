@@ -1,7 +1,9 @@
 //注册
 
-var router = require('./index');
+module.exports = function (req, res) {
+    var user = require('./index.js')(req, res);
 
-module.exports = {
-    put: router.modipwd
+    return {
+        PUT: user.modipwd
+    };
 };

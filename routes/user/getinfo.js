@@ -1,7 +1,9 @@
 //登陆信息
 
-var user = require('./index');
+module.exports = function (req, res) {
+    var user = require('./index.js')(req, res);
 
-module.exports = {
-    get: user.getinfo
+    return {
+        GET: user.getinfo
+    };
 };

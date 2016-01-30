@@ -1,7 +1,9 @@
 //注销
 
-var user = require('./index');
+module.exports = function (req, res) {
+    var user = require('./index.js')(req, res);
 
-module.exports = {
-    delete: user.logoff
+    return {
+        DELETE: user.logoff
+    };
 };
