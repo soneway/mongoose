@@ -32,7 +32,7 @@ var loginPaths = ['/user/getinfo', '/user'],
 app.use('/*', function (req, res, next) {
     //请求路径
     var path = req.baseUrl;
-    var jtool = require('./jtool.js')(req, res);
+    var util = require('./routes/_util.js')(null, req, res);
 
     //不需要登陆拦截的
     if (nologinPaths.indexOf(path) !== -1) {
@@ -42,7 +42,7 @@ app.use('/*', function (req, res, next) {
     //需要登陆拦截的,其他默认为不是get都拦截下
     if (loginPaths.indexOf(path) !== -1 || req.method !== 'GET') {
         if (!req.session.user) {
-            return jtool.sendMsg(401, '未登陆');
+            return util.sendMsg(401, '未登陆');
         }
     }
     next();
@@ -53,7 +53,7 @@ app.use('/*', function (req, res, next) {
 app.use('/*', function (req, res) {
     //请求路径
     var path = req.baseUrl;
-    var jtool = require('./jtool.js')(req, res);
+    var util = require('./routes/_util.js')(null, req, res);
 
     //预防未知路径
     var router = require('./routes' + path)(req, res);
@@ -62,7 +62,7 @@ app.use('/*', function (req, res) {
     var cb = router[req.method];
     //未知的method
     if (typeof cb !== 'function') {
-        return jtool.sendMsg(404, '未知方法');
+        return util.sendMsg(404, '未知方法');
     }
     cb();
 });

@@ -21,7 +21,7 @@ var storage = multer.diskStorage({
     ]);
 
 module.exports = function (req, res) {
-    var router = require('./_router.js')(null, req, res);
+    var router = require('./_util.js')(null, req, res);
 
     return {
         //上传文件

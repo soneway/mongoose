@@ -114,7 +114,6 @@ module.exports = function (model, req, res) {
 
     })();
 
-
     //添加
     function add(opts) {
         opts || (opts = {});
@@ -122,7 +121,6 @@ module.exports = function (model, req, res) {
         //添加
         model.create(filterField(opts.doc, opts.$out, opts.$in), onsave);
     }
-
 
     //id更新
     function editById(opts) {
@@ -142,7 +140,6 @@ module.exports = function (model, req, res) {
         //更新
         model.update(opts.condition, filterField(opts.doc, opts.$out, opts.$in), onsave);
     }
-
 
     //id删除
     function delById(_id) {
@@ -218,6 +215,7 @@ module.exports = function (model, req, res) {
         if (err) return error(err);
         sendData(doc);
     }
+
 
     return {
         extend: extend,

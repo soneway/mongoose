@@ -3,7 +3,7 @@
 var model = require('../models/article');
 
 module.exports = function (req, res) {
-    var router = require('./_router.js')(model, req, res);
+    var util = require('./_util.js')(model, req, res);
 
     return {
         //获取文章
@@ -11,10 +11,12 @@ module.exports = function (req, res) {
             var query = req.query;
 
             //查id
-            if (query._id) return router.getById(query._id);
+            if (query._id) {
+                return util.getById(query._id);
+            }
 
             //查列表
-            router.getList({
+            util.getList({
                 pager : query,
                 select: '_id title author'
             });
@@ -30,7 +32,7 @@ module.exports = function (req, res) {
             body.author = user.uid;
             body.createtime = new Date;
 
-            router.add({
+            util.add({
                 doc: body
             });
         },
@@ -42,22 +44,22 @@ module.exports = function (req, res) {
 
             //_id非空验证
             if (!body._id) {
-                return router.sendError('_id不能为空');
+                return util.sendError('_id不能为空');
             }
 
             //查id
             model.findById(body._id).exec(function (err, doc) {
-                if (err) return router.error(err);
+                if (err) return util.error(err);
 
                 //判断作者是否相同(doc._userid需先转成字符串)
                 if (!doc || doc._userid + '' !== user._id) {
-                    return router.sendError('无权限修改');
+                    return util.sendError('无权限修改');
                 }
 
                 //添加其他信息
                 body.updatetime = new Date;
 
-                router.editById({
+                util.editById({
                     _id : body._id,
                     doc : body,
                     $out: '_userid author createtime'
@@ -72,22 +74,22 @@ module.exports = function (req, res) {
 
             //_id非空验证
             if (!body._id) {
-                return router.sendError('_id不能为空');
+                return util.sendError('_id不能为空');
             }
 
             //查id
             model.findById(body._id).exec(function (err, doc) {
-                if (err) return router.error(err);
+                if (err) return util.error(err);
 
                 //判断作者是否相同(doc._userid需先转成字符串)
                 if (!doc || doc._userid + '' !== user._id) {
-                    return router.sendError('无权限修改');
+                    return util.sendError('无权限修改');
                 }
 
                 //添加其他信息
                 body.updatetime = new Date;
 
-                router.delById(body._id);
+                util.delById(body._id);
             });
         }
     };

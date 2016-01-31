@@ -3,7 +3,7 @@
 var model = require('../../models/user.js');
 
 module.exports = function (req, res) {
-    var router = require('../_router.js')(model, req, res);
+    var util = require('../_util.js')(model, req, res);
 
     return {
         //注册
@@ -14,15 +14,15 @@ module.exports = function (req, res) {
             model.findOne({
                 uid: body.uid
             }).exec(function (err, doc) {
-                if (err) return router.error(err);
+                if (err) return util.error(err);
 
                 //用户名已存在
                 if (doc) {
-                    return router.sendError('用户名已存在');
+                    return util.sendError('用户名已存在');
                 }
 
                 //添加用户
-                router.add({
+                util.add({
                     doc: body
                 });
             });
@@ -33,7 +33,7 @@ module.exports = function (req, res) {
             var body = req.body,
                 user = req.session.user;
 
-            router.editById({
+            util.editById({
                 _id : user._id,
                 doc : body,
                 $out: 'uid pwd'
@@ -47,20 +47,20 @@ module.exports = function (req, res) {
             model.findOne({
                 uid: body.uid
             }).ne('status', -1).exec(function (err, doc) {
-                if (err) return router.error(err);
+                if (err) return util.error(err);
 
                 //用户名不存在
                 if (!doc) {
-                    return router.sendError('用户名不存在');
+                    return util.sendError('用户名不存在');
                 }
 
                 //密码错误
                 if (doc.pwd !== body.pwd) {
-                    return router.sendError('密码错误');
+                    return util.sendError('密码错误');
                 }
 
                 //session记录用户
-                router.sendData(req.session.user = {
+                util.sendData(req.session.user = {
                     _id: doc._id,
                     uid: doc.uid
                 });
@@ -69,12 +69,12 @@ module.exports = function (req, res) {
 
         //退出登陆
         logout: function () {
-            router.sendData(req.session.user = null);
+            util.sendData(req.session.user = null);
         },
 
         //获取用户信息
         getinfo: function () {
-            router.sendData(req.session.user);
+            util.sendData(req.session.user);
         },
 
         //修改密码
@@ -83,20 +83,20 @@ module.exports = function (req, res) {
                 user = req.session.user;
 
             if (!body.pwd) {
-                return router.sendError('pwd不能为空');
+                return util.sendError('pwd不能为空');
             }
 
             model.findById(user._id).exec(function (err, doc) {
-                if (err) return router.error(err);
+                if (err) return util.error(err);
 
                 //旧密码不正确
                 if (body.oldpwd !== doc.pwd) {
-                    return router.sendError('旧密码不正确');
+                    return util.sendError('旧密码不正确');
                 }
 
                 //保存
                 doc.pwd = body.pwd;
-                doc.save(router.onsave);
+                doc.save(util.onsave);
             });
         },
 
@@ -105,7 +105,7 @@ module.exports = function (req, res) {
             var user = req.session.user;
 
             req.session.user = null;
-            model.findByIdAndUpdate(user._id, {status: -2}, router.onsave);
+            model.findByIdAndUpdate(user._id, {status: -2}, util.onsave);
         }
     };
 };
