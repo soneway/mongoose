@@ -15,10 +15,7 @@ module.exports = function (req, res) {
 
             //查列表
             router.getList({
-                pager : {
-                    page    : query.page,
-                    pagesize: query.pagesize
-                },
+                pager : query,
                 select: '_id title author'
             });
         },

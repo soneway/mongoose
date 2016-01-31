@@ -21,14 +21,14 @@ var storage = multer.diskStorage({
     ]);
 
 module.exports = function (req, res) {
-    var jtool = require('../jtool.js')(req, res);
+    var router = require('./_router.js')(null, req, res);
 
     return {
         //上传文件
         POST: function () {
             upload(req, res, function (err) {
                 if (err) return jtool.error(err);
-                jtool.sendData(req.files);
+                router.sendData(req.files);
             });
         }
     };

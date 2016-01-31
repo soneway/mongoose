@@ -1,11 +1,9 @@
 //用户
 
 var model = require('../../models/user.js');
-var Router = require('../_router.js');
-var router = new Router(model);
 
 module.exports = function (req, res) {
-    var jtool = require('../../jtool.js')(req, res);
+    var router = require('../_router.js')(model, req, res);
 
     return {
         //注册
@@ -16,11 +14,11 @@ module.exports = function (req, res) {
             model.findOne({
                 uid: body.uid
             }).exec(function (err, doc) {
-                if (err) return jtool.error(err);
+                if (err) return router.error(err);
 
                 //用户名已存在
                 if (doc) {
-                    return jtool.sendError('用户名已存在');
+                    return router.sendError('用户名已存在');
                 }
 
                 //添加用户
@@ -49,20 +47,20 @@ module.exports = function (req, res) {
             model.findOne({
                 uid: body.uid
             }).ne('status', -1).exec(function (err, doc) {
-                if (err) return jtool.error(err);
+                if (err) return router.error(err);
 
                 //用户名不存在
                 if (!doc) {
-                    return jtool.sendError('用户名不存在');
+                    return router.sendError('用户名不存在');
                 }
 
                 //密码错误
                 if (doc.pwd !== body.pwd) {
-                    return jtool.sendError('密码错误');
+                    return router.sendError('密码错误');
                 }
 
                 //session记录用户
-                jtool.sendData(req.session.user = {
+                router.sendData(req.session.user = {
                     _id: doc._id,
                     uid: doc.uid
                 });
@@ -71,12 +69,12 @@ module.exports = function (req, res) {
 
         //退出登陆
         logout: function () {
-            jtool.sendData(req.session.user = null);
+            router.sendData(req.session.user = null);
         },
 
         //获取用户信息
         getinfo: function () {
-            jtool.sendData(req.session.user);
+            router.sendData(req.session.user);
         },
 
         //修改密码
@@ -85,20 +83,20 @@ module.exports = function (req, res) {
                 user = req.session.user;
 
             if (!body.pwd) {
-                return jtool.sendError('pwd不能为空');
+                return router.sendError('pwd不能为空');
             }
 
             model.findById(user._id).exec(function (err, doc) {
-                if (err) return jtool.error(err);
+                if (err) return router.error(err);
 
                 //旧密码不正确
                 if (body.oldpwd !== doc.pwd) {
-                    return jtool.sendError('旧密码不正确');
+                    return router.sendError('旧密码不正确');
                 }
 
                 //保存
                 doc.pwd = body.pwd;
-                doc.save(jtool.onsave);
+                doc.save(router.onsave);
             });
         },
 
@@ -107,7 +105,7 @@ module.exports = function (req, res) {
             var user = req.session.user;
 
             req.session.user = null;
-            model.findByIdAndUpdate(user._id, {status: -2}, jtool.onsave);
+            model.findByIdAndUpdate(user._id, {status: -2}, router.onsave);
         }
     };
 };

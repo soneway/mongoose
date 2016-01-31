@@ -1,65 +1,64 @@
-//Rotuer类
+//router工具
 
-module.exports = function (model, req, res) {
+//扩展函数
+var extend = (function () {
+    var tmpArray = [],
+        forEach = tmpArray.forEach,
+        slice = tmpArray.slice;
 
-    //扩展函数
-    var extend = (function () {
-        var tmpArray = [],
-            forEach = tmpArray.forEach,
-            slice = tmpArray.slice;
-
-        return function (obj) {
-            //$.extend(obj)
-            if (arguments.length === 1) {
-                for (var p in obj) {
-                    this[p] = obj[p];
-                }
-                return this;
+    return function (obj) {
+        //$.extend(obj)
+        if (arguments.length === 1) {
+            for (var p in obj) {
+                this[p] = obj[p];
             }
+            return this;
+        }
 
-            //$.extend({}, defaults[, obj])
-            forEach.call(slice.call(arguments, 1), function (item) {
-                for (var p in item) {
-                    obj[p] = item[p];
-                }
-            });
-            return obj;
-        };
-    })();
+        //$.extend({}, defaults[, obj])
+        forEach.call(slice.call(arguments, 1), function (item) {
+            for (var p in item) {
+                obj[p] = item[p];
+            }
+        });
+        return obj;
+    };
+})();
 
-    //field过滤函数
-    var filterField = (function () {
-        //默认排除项
-        var $dout = '_id status';
+//field过滤函数
+var filterField = (function () {
+    //默认排除项
+    var $dout = '_id status';
 
-        return function (body, $out, $in) {
-            //默认项排除
-            $dout.split(' ').forEach(function (item) {
+    return function (body, $out, $in) {
+        //默认项排除
+        $dout.split(' ').forEach(function (item) {
+            delete body[item];
+        });
+
+        //排除
+        if (typeof $out === 'string') {
+            $out.split(' ').forEach(function (item) {
                 delete body[item];
             });
-
-            //排除
-            if (typeof $out === 'string') {
-                $out.split(' ').forEach(function (item) {
-                    delete body[item];
-                });
-                return body;
-            }
-
-            //包含
-            if (typeof $in === 'string') {
-                var doc = {};
-                $in.split(' ').forEach(function (item) {
-                    doc[item] = body[item];
-                });
-                return doc;
-            }
-
-            //其他
             return body;
-        };
-    })();
+        }
 
+        //包含
+        if (typeof $in === 'string') {
+            var doc = {};
+            $in.split(' ').forEach(function (item) {
+                doc[item] = body[item];
+            });
+            return doc;
+        }
+
+        //其他
+        return body;
+    };
+})();
+
+module.exports = function (model, req, res) {
 
     //查id
     function getById(_id, select) {
@@ -221,7 +220,8 @@ module.exports = function (model, req, res) {
     }
 
     return {
-        extend  : extend,
+        extend: extend,
+
         getById : getById,
         getList : getList,
         add     : add,
