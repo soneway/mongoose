@@ -1,6 +1,6 @@
 //上传
 
-var app = require('../app');
+var app = require('../app.js');
 var path = require('path');
 var guid = require('guid');
 var multer = require('multer');
@@ -21,14 +21,14 @@ var storage = multer.diskStorage({
     ]);
 
 module.exports = function (req, res) {
-    var router = require('./_util.js')(null, req, res);
+    var util = require('./_util.js')(null, req, res);
 
     return {
         //上传文件
         POST: function () {
             upload(req, res, function (err) {
                 if (err) return jtool.error(err);
-                router.sendData(req.files);
+                util.sendData(req.files);
             });
         }
     };
