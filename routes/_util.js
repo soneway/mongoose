@@ -161,13 +161,20 @@ module.exports = function (model, req, res) {
     function send(rsInfo) {
         var query = req.query;
 
-        //jsonp方式
+        var rsStr = JSON.stringify(rsInfo);
+        //跨域get方式
         if (query && query.callback !== undefined) {
-            res.send(query.callback + '(' + JSON.stringify(rsInfo) + ')');
+            return res.send(query.callback + '(' + rsStr + ')');
         }
-        else {
-            res.send(rsInfo);
+        //跨域form方式
+        if (query && query.jsonp) {
+            rsStr = JSON.stringify({
+                id: query.jsonp,
+                rs: rsInfo
+            });
+            return res.send('<script type="text/javascript">parent.postMessage(\'' + rsStr + '\',"*");</script>');
         }
+        res.send(rsInfo);
     }
 
     //向客户端发送信息函数
