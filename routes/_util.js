@@ -7,14 +7,6 @@ var extend = (function () {
         slice = tmpArray.slice;
 
     return function (obj) {
-        //$.extend(obj)
-        if (arguments.length === 1) {
-            for (var p in obj) {
-                this[p] = obj[p];
-            }
-            return this;
-        }
-
         //$.extend({}, defaults[, obj])
         forEach.call(slice.call(arguments, 1), function (item) {
             for (var p in item) {
@@ -172,7 +164,7 @@ module.exports = function (model, req, res) {
                 id: query.jsonp,
                 rs: rsInfo
             });
-            return res.send('<script type="text/javascript">parent.postMessage(\'' + rsStr + '\',"*");</script>');
+            return res.send('<script type="text/javascript">parent.postMessage(JSON.stringify(' + rsStr + '),"*");</script>');
         }
         res.send(rsInfo);
     }
