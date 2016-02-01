@@ -27,7 +27,7 @@ module.exports = function (req, res) {
         //上传文件
         POST: function () {
             upload(req, res, function (err) {
-                if (err) return jtool.error(err);
+                if (err) return util.error(err);
                 util.sendData(req.files);
             });
         }
