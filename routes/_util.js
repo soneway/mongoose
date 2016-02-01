@@ -161,14 +161,14 @@ module.exports = function (model, req, res) {
     function send(rsInfo) {
         var query = req.query;
 
-        var rsStr = JSON.stringify(rsInfo);
         //跨域get方式
         if (query && query.callback !== undefined) {
+            var rsStr = JSON.stringify(rsInfo);
             return res.send(query.callback + '(' + rsStr + ')');
         }
         //跨域form方式
         if (query && query.jsonp) {
-            rsStr = JSON.stringify({
+            var rsStr = JSON.stringify({
                 id: query.jsonp,
                 rs: rsInfo
             });
