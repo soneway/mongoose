@@ -166,6 +166,7 @@ module.exports = function (model, req, res) {
             });
             return res.send('<script type="text/javascript">parent.postMessage(JSON.stringify(' + rsStr + '),"*");</script>');
         }
+        //普通ajax请求
         res.send(rsInfo);
     }
 
