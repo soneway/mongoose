@@ -32,7 +32,7 @@ var loginPaths = ['/user/getinfo', '/user'],
 app.use('/*', function (req, res, next) {
     //请求路径
     var path = req.baseUrl;
-    var util = require('./routes/_util.js')(null, req, res);
+    var util = require('./routes/_util')(null, req, res);
 
     //不需要登陆拦截的
     if (nologinPaths.indexOf(path) !== -1) {
@@ -53,7 +53,7 @@ app.use('/*', function (req, res, next) {
 app.use('/*', function (req, res) {
     //请求路径
     var path = req.baseUrl;
-    var util = require('./routes/_util.js')(null, req, res);
+    var util = require('./routes/_util')(null, req, res);
 
     //预防未知路径
     var router = require('./routes' + path)(req, res);

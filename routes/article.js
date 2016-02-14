@@ -3,7 +3,7 @@
 var model = require('../models/article');
 
 module.exports = function (req, res) {
-    var util = require('./_util.js')(model, req, res);
+    var util = require('./_util')(model, req, res);
 
     return {
         //获取文章

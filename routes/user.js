@@ -1,9 +1,9 @@
 //用户
 
-var model = require('../../models/user.js');
+var model = require('../models/user');
 
 module.exports = function (req, res) {
-    var util = require('../_util.js')(model, req, res);
+    var util = require('./_util')(model, req, res);
 
     return {
         //注册
